@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image } from 'react-native';
 
 import { Container, ButtonQuest, Input } from './styles';
 import subtract from '../../assets/subtract.png';
 
-const Quest: React.FC = () => {
+interface IQuest {
+  sendText: (text: string) => void;
+}
+
+const Quest: React.FC<IQuest> = ({ sendText }) => {
+
+  const [inputText, onChangeText] = useState('');
+
 
   return (
     <Container>
-      <Input />
+      <Input onChangeText={(text: string) => onChangeText(text)} />
 
       <ButtonQuest onPress={() => {
-      console.log('fsd')
+        sendText(inputText);
       }} >
         <Image source={subtract} />
       </ButtonQuest>

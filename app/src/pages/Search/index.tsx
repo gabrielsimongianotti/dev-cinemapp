@@ -6,33 +6,29 @@ import Card from '../../components/Card';
 import api from '../../services/api';
 import Options from '../../components/Options';
 
+interface Imovie {
+  Title: string;
+  Year: string;
+  Poster: string;
+  Type: string;
+  imdbID: string;
+}
+
 const Search: React.FC = () => {
-  const [datasApi, setDataApi] = useState([]);
+  const [datasApi, setDataApi] = useState<Imovie[]>([]);
+  const [error, setError] = useState(false);
 
   const getApi = useCallback((text: string) => {
     api.get(`?apikey=925eba28&s=${text}`).then((response) => {
 
-console.log(typeof(response.data.Response),response.data.Response )
       // os filhos da puta me retorna um true que é um string que porra
       if (response.data.Response === 'True') {
-        console.log(response.data)
         setDataApi(response.data.Search);
+        setError(false)
       }
       else {
-        console.log(response)
-        Alert.alert(
-        "Alert Title",
-        'response.data.Error',
-        [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel"
-          },
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ],
-        { cancelable: false }
-      );
+        setDataApi([]);
+        setError(true);
       }
     })
   }, [setDataApi])
@@ -41,9 +37,7 @@ console.log(typeof(response.data.Response),response.data.Response )
     <View>
       <Container >
         <SearchT sendText={getApi} />
-        {
-          console.log("datasApi, ", datasApi)
-        }
+        {error?<Alert >Não encontrado</Alert>:null}
         <ScrollView >
           {
             datasApi.map(({ Poster, Title, Type, Year, imdbID }) => (

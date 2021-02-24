@@ -1,5 +1,11 @@
 # dev-cinemapp
 
+###Images
+
+Image:
+![](https://raw.githubusercontent.com/gabrielsimongianotti/dev-cinemapp/master/image/favorits.jpeg)
+
+![](https://raw.githubusercontent.com/gabrielsimongianotti/dev-cinemapp/master/image/search.jpeg)
 ### Olá amigx,
 
 ### Seja bem vindx ao nosso desafio!

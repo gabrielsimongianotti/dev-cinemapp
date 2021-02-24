@@ -1,70 +1,72 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { FlatList, Text } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import { Container, ScrollView, View } from './styled';
+import { Container, CardList, View } from './styled';
 
 import Card from '../../components/Card';
 import api from '../../services/api';
 import Options from '../../components/Options';
+interface Imovie {
+  Title: string;
+  Year: string;
+  Poster: string;
+  Type: string;
+  imdbID: string;
+}
 
 const Search: React.FC = () => {
-  interface Imovie {
-    Title: string;
-    Year: string;
-    Poster: string;
-    Type: string;
-    imdbID: string;
-  }
 
-  const [datasApi, setDataApi] = useState<Imovie[]>([]);
+  const [dataApi, setDataApi] = useState<Imovie[]>([]);
 
   useEffect(() => {
-    // AsyncStorage.clear()
-
     getData();
   }, [])
+
   const getData = useCallback(async () => {
-    let ids = await AsyncStorage.getItem('ids');
-    console.log(ids)
+    const ids = await AsyncStorage.getItem('ids');
+
     if (ids) {
       const json = JSON.parse(ids);
-      json.data.map((id: string) => {
-        getDataApi(id);
+
+      json.data.map(async (id: string) => {
+        await getDataApi(id)
       })
     }
-  }, [datasApi]);
+  }, []);
 
   const getDataApi = useCallback(async (id: string) => {
     const { data } = await api.get(`?apikey=925eba28&i=${id}`);
-    console.log(data.Title)
 
-    const valueJson = datasApi
-    valueJson.push(
-      {
+    const valueJson = await dataApi;
+
+    if (dataApi.filter(item => item.imdbID === id).length === 0) {
+      valueJson.push({
         Title: data.Title,
         Year: data.Year,
         Poster: data.Poster,
         Type: data.Type,
         imdbID: data.imdbID,
-      }
-    );
+      })
+    }
 
     await setDataApi(valueJson);
-  }, [datasApi])
+
+  }, [dataApi]);
+
+  const fuctionCard = ({ item: { Title = '', Year = '', Poster = '', imdbID = '', Type = '' } }) => (
+    <Card title={Title} year={Year} image_url={Poster} key={imdbID} id={imdbID} type={Type} />
+  )
 
   return (
     <View>
       <Container >
-        {
-          console.log(datasApi.length)
-        }
-        <ScrollView >
-          {
-            datasApi.map(({ Poster, Title, Type, Year, imdbID }) => (
-              <Card title={Title} year={Year} image_url={Poster} key={imdbID} id={imdbID} type={Type} like={true} />
-            ))
-          }
-        </ScrollView>
+
+        <CardList
+          data={dataApi}
+          keyExtractor={(item: { imdbID: string; }) => item.imdbID}
+          renderItem={fuctionCard}
+        />
 
       </Container>
       <Options />

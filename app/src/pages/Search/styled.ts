@@ -15,6 +15,17 @@ export const View = styled.View`
   flex:1
 `;
 
-export const Alert = styled.Alert`
-   background: #565E70;
+export const Alert = styled.Text`
+  margin-top: 20px;
+  height: 40px;
+  width: 205px;
+  background: #363D4D;
+  color: #aeb4b7;
+  font-family: 'RobotoSlab-medium';
+  font-weight: bold;
+  color: #aeb4b7;
+  border-radius: 10px;
+  font-size: 28px;
+  justify-content: space-around;
+  flex-direction: row;
 `;

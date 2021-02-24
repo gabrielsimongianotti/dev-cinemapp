@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Container, ButtonQuest, Text, ImagePoster, View } from './styles';
@@ -15,7 +15,22 @@ interface ICard {
 }
 
 const Card: React.FC<ICard> = ({ title, year, image_url, type, id, like = false }) => {
-  const [favorites, setFavorites] = useState(like)
+  const [favorites, setFavorites] = useState(like);
+
+  useEffect(() => {
+    const functAsync = async () => {
+      const ids = await AsyncStorage.getItem('ids');
+
+      if (ids) {
+        const json = JSON.parse(ids);
+        const newJson = await json.data.filter((data: string) => data === id);
+        if(newJson[0]){
+          setFavorites(true)
+        }
+      }
+    }
+    functAsync()
+  }, [])
 
   return (
     <Container>
